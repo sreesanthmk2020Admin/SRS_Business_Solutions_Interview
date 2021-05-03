@@ -26,6 +26,12 @@ public final class BB_HomePage extends BB_BasePage {
 	}
 
 	public final boolean selectCategory(String childSubCategory) {
+		actualResults = false;
+		try {
+			if(btn_Close.isDisplayed())
+				btn_Close.click();
+		} catch (Exception e) {}
+		
 		try {
 			obj_GenericComponents.SyncElement(lnk_shopByCategory, "visibility");
 			obj_GenericComponents.hoverOnElement(lnk_shopByCategory);

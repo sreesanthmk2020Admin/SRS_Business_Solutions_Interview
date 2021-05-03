@@ -21,6 +21,9 @@ public final class BB_CategoryPage extends BB_BasePage {
 	@FindBy(how=How.XPATH, xpath = "//h4[span[text()='Brand']]/following-sibling::section/div[last()]/label")
 	private WebElement chk_lasttBrand;
 	
+	@FindBy(xpath="//li/a[text()='Clear all']")
+	private WebElement btn_ClearAll;
+	
 	@FindBy(how=How.CSS, css = "div.items>div[qa='product']")
 	private List<WebElement> productList;
 	
@@ -50,6 +53,7 @@ public final class BB_CategoryPage extends BB_BasePage {
 	}
 	
 	public final boolean searchBrand(String searchKey) {
+		actualResults = false;
 		try {
 			obj_GenericComponents.SyncElement(txt_search, "visibility");
 			txt_search.sendKeys(searchKey);
@@ -61,11 +65,17 @@ public final class BB_CategoryPage extends BB_BasePage {
 	}
 	
 	public final boolean selectFirstLast() {
+		actualResults = false;
 		try {
 			chk_firstBrand.click();
-			chk_lasttBrand.click();
-			actualResults = chk_firstBrand.findElement(By.xpath("child::input")).isSelected() && chk_lasttBrand.findElement(By.xpath("child::input")).isSelected();
+			obj_GenericComponents.SyncElement(btn_ClearAll, "enable");
+			Thread.sleep(10000);
 			
+			chk_lasttBrand.click();
+			obj_GenericComponents.SyncElement(btn_ClearAll, "enable");
+			Thread.sleep(10000);
+			
+			actualResults = chk_firstBrand.findElement(By.xpath("child::input")).isSelected() && chk_lasttBrand.findElement(By.xpath("child::input")).isSelected();
 			if(actualResults)
 				placeHolder = String.valueOf(productList.size());
 		} catch (Exception e) {
@@ -75,6 +85,7 @@ public final class BB_CategoryPage extends BB_BasePage {
 	}
 	
 	public final boolean addfirstItemInCart(int quantity) {
+		actualResults = false;
 		try {
 			placeHolder = String.valueOf(Float.valueOf(lbl_Price.getText()) * quantity);
 			txt_Qty.clear();
@@ -89,10 +100,18 @@ public final class BB_CategoryPage extends BB_BasePage {
 	}
 	
 	public final boolean verifyproductAddedtoCart() {
+		actualResults = false;
+		try {
+			DriverManager.driver.findElement(By.xpath("//div[starts-with(text(),'Successfully added')]")).click();
+			//obj_GenericComponents.SyncElement(DriverManager.driver.findElement(By.xpath("//div[starts-with(text(),'Successfully added')]")), "not visible");
+		} catch (Exception e) {}
 		try {
 			btn_myBasket.click();
-			actualResults = lbl_cartProd.getText().contains(lbl_name.getText()) 
-					&& placeHolder.equalsIgnoreCase(lbl_subTotal.getText());
+			Thread.sleep(10000);
+			System.out.println(lbl_cartProd.getText().contains(lbl_name.getText()));
+			System.out.println(Float.valueOf(placeHolder).compareTo(Float.valueOf(lbl_subTotal.getText())));
+			System.out.println(Float.valueOf(placeHolder).compareTo(Float.valueOf(lbl_subTotal.getText())) == 0);
+			actualResults = Boolean.compare(lbl_cartProd.getText().contains(lbl_name.getText()), Float.valueOf(placeHolder).compareTo(Float.valueOf(lbl_subTotal.getText())) == 0) == 0;
 		} catch (Exception e) {
 			obj_GenericComponents.exceptionHandler(e);
 		}

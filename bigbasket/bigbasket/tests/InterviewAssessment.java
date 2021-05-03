@@ -40,8 +40,8 @@ public final class InterviewAssessment extends BaseInterviewAssessment {
 	@Test(retryAnalyzer=RetryAnalyzer.class)
 	private final void step05() {
 		testResultPlaceHolder = "Did not show up in basket/cart";
-		Assert.assertTrue(obj_BB_CategoryPage.addfirstItemInCart(2));
-		testResultPlaceHolder = "Successfully displayed in basket with price sumup to the quantity";
+		Assert.assertTrue(obj_BB_CategoryPage.verifyproductAddedtoCart());
+		testResultPlaceHolder = "Successfully displayed in basket with price sumup to the quantity:" + BB_BasePage.placeHolder;
 	}
 	
 }
